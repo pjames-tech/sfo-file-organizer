@@ -14,7 +14,7 @@ A Python utility that automatically organizes files into categorized folders bas
 
 ## Architecture
 
-```
+```text
 smart-file-organizer/
 ├── organizer.py        # Main CLI and orchestration
 ├── config.py           # Configuration and file categories
