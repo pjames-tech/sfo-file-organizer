@@ -43,28 +43,31 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Interactive Mode (Default)
+### Quick Start
 
 ```bash
-python organizer.py
+python organizer.py --source ~/Downloads
 ```
 
-You'll be prompted for source and destination directories.
+This organizes files **in-place** - category folders (Images, Documents, etc.) are created directly inside your Downloads folder.
 
 ### CLI Mode
 
 ```bash
-# Basic usage with defaults
-python organizer.py --source ~/Downloads --dest ~/Downloads/Organized
+# Organize Downloads folder (in-place)
+python organizer.py --source ~/Downloads
 
 # Dry-run (preview without moving files)
 python organizer.py --dry-run --source ~/Downloads
 
-# Verbose logging
-python organizer.py --log-level DEBUG --source ~/Downloads
+# With AI classification
+python organizer.py --use-ai --source ~/Downloads
 
-# All options
-python organizer.py --source ~/Downloads --dest ~/Organized --dry-run --log-level INFO
+# Undo last organization
+python organizer.py --undo
+
+# View history
+python organizer.py --history
 ```
 
 ### CLI Options
@@ -72,10 +75,14 @@ python organizer.py --source ~/Downloads --dest ~/Organized --dry-run --log-leve
 | Flag            | Short | Description                                     |
 | --------------- | ----- | ----------------------------------------------- |
 | `--source`      | `-s`  | Source directory to organize                    |
-| `--dest`        | `-d`  | Destination directory                           |
+| `--dest`        | `-d`  | Destination directory (default: same as source) |
 | `--dry-run`     | `-n`  | Preview changes without moving files            |
+| `--in-place`    | `-i`  | Organize within source folder (default)         |
+| `--use-ai`      |       | Enable AI classification (requires Ollama)      |
+| `--undo`        |       | Undo the last organization                      |
+| `--history`     |       | Show organization history                       |
+| `--ai-stats`    |       | Show AI learning statistics                     |
 | `--log-level`   | `-l`  | Set logging level (DEBUG, INFO, WARNING, ERROR) |
-| `--use-ai`      |       | Enable AI classification (requires setup)       |
 | `--no-log-file` |       | Disable logging to file                         |
 
 ### Examples
@@ -84,8 +91,8 @@ python organizer.py --source ~/Downloads --dest ~/Organized --dry-run --log-leve
 # Preview what would happen
 python organizer.py --dry-run --source ./messy_folder
 
-# Organize with debug logging
-python organizer.py -s ~/Downloads -d ~/Sorted -l DEBUG
+# Organize with AI and debug logging
+python organizer.py --use-ai -s ~/Downloads -l DEBUG
 
 # Quick organize current downloads
 python organizer.py --source ~/Downloads
@@ -127,30 +134,68 @@ pytest tests/ -v
 pytest tests/test_rules.py -v
 ```
 
+## AI Classification (Ollama)
+
+The organizer supports **local AI classification** using [Ollama](https://ollama.ai/) - free, private, no API key needed.
+
+### AI Features
+
+- **Content Analysis** - Reads text files to classify based on contents
+- **Learning System** - Remembers patterns from your classifications
+- **Multi-modal Vision** - Analyzes images using llava model
+- **Smart Fallback** - Uses filename when content isn't available
+
+### Setup
+
+1. **Install Ollama**: Download from [ollama.ai/download](https://ollama.ai/download)
+
+2. **Pull models**:
+
+   ```bash
+   ollama pull llama3.2      # Required: text classification
+   ollama pull llava         # Optional: image analysis
+   ```
+
+3. **Install Python dependency**:
+
+   ```bash
+   pip install requests
+   ```
+
+4. **Run with AI**:
+
+   ```bash
+   python organizer.py --use-ai --source ~/Downloads --dry-run
+   ```
+
+5. **Check learning stats**:
+
+   ```bash
+   python organizer.py --ai-stats
+   ```
+
+### How AI Classification Works
+
+1. **Learned Patterns** - Checks if filename matches previously learned patterns
+2. **Vision Analysis** - For images, uses llava to "see" what the image contains
+3. **Content Analysis** - For text files, reads contents to understand the file
+4. **Filename AI** - Falls back to classifying by filename with LLM
+
 ## Roadmap
+
+### Completed Features
+
+- [x] **AI Classification** - Local AI with Ollama ✅
+- [x] **Content Analysis** - Classify based on file contents ✅
+- [x] **Learning System** - Adapts to your patterns ✅
+- [x] **Multi-modal Vision** - Analyze images with llava ✅
+- [x] **Undo Support** - Reverse organization with `--undo` ✅
+- [x] **Custom Rules UI** - Web GUI for managing rules ✅
 
 ### Planned Features
 
-- [ ] **AI Classification** - Integrate OpenAI/Gemini for smart categorization
 - [ ] **Watch Mode** - Automatically organize new files as they appear
-- [ ] **Undo Support** - Reverse the last organization operation
-- [ ] **Custom Rules UI** - GUI for managing classification rules
 - [ ] **Cloud Storage** - Support for S3, Google Drive, Dropbox
-
-### AI Integration (Coming Soon)
-
-The `ai_classifier.py` module provides a placeholder for AI-powered classification:
-
-```python
-# Future usage (not yet implemented)
-python organizer.py --use-ai --source ~/Downloads
-```
-
-Planned AI features:
-
-- **Content Analysis** - Classify based on file contents, not just names
-- **Learning** - Adapt to user's organization patterns
-- **Multi-modal** - Analyze images, documents, and other file types
 
 ## License
 

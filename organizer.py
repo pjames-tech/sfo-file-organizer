@@ -21,6 +21,7 @@ from config import FILE_CATEGORIES, DEFAULT_SOURCE_DIR, DEFAULT_DEST_DIR
 from logging_config import setup_logging, get_logger
 from rules import classify_file, classify_by_rules
 from ai_classifier import classify_with_ai, is_ai_available
+from history import start_session, record_movement, save_session, undo_last_session, get_history_summary
 
 
 def get_category(file_extension: str) -> str:
@@ -90,6 +91,9 @@ def organize_files(
     
     stats = {"moved": 0, "skipped": 0, "errors": 0}
     
+    # Start a session for undo support
+    session = start_session(str(source), str(destination), dry_run)
+    
     logger.info(f"{'[DRY RUN] ' if dry_run else ''}Organizing files from: {source}")
     logger.info(f"{'[DRY RUN] ' if dry_run else ''}Destination: {destination}")
     
@@ -134,7 +138,10 @@ def organize_files(
                 if dry_run:
                     logger.info(f"[DRY RUN] Would move: {file_path.name} -> {category}/")
                 else:
+                    # Record the movement before moving
+                    original_path = str(file_path)
                     shutil.move(str(file_path), str(dest_path))
+                    record_movement(session, original_path, str(dest_path))
                     logger.info(f"Moved: {file_path.name} -> {category}/")
                 
                 stats["moved"] += 1
@@ -151,6 +158,9 @@ def organize_files(
         else:
             logger.debug(f"Skipped directory: {file_path.name}")
             stats["skipped"] += 1
+    
+    # Save session for undo support
+    save_session(session)
     
     return stats
 
@@ -195,6 +205,12 @@ Examples:
     )
     
     parser.add_argument(
+        "--in-place", "-i",
+        action="store_true",
+        help="Organize files within the source folder (creates subfolders in source)"
+    )
+    
+    parser.add_argument(
         "--use-ai",
         action="store_true",
         help="Enable AI-powered classification (requires API setup)"
@@ -212,6 +228,24 @@ Examples:
         "--no-log-file",
         action="store_true",
         help="Disable logging to file"
+    )
+    
+    parser.add_argument(
+        "--ai-stats",
+        action="store_true",
+        help="Show AI learning statistics and exit"
+    )
+    
+    parser.add_argument(
+        "--undo",
+        action="store_true",
+        help="Undo the last organization operation"
+    )
+    
+    parser.add_argument(
+        "--history",
+        action="store_true",
+        help="Show organization history and exit"
     )
     
     return parser.parse_args()
@@ -235,11 +269,58 @@ def main() -> int:
     print("Smart File Organizer")
     print("=" * 50)
     
+    # Handle --ai-stats flag
+    if args.ai_stats:
+        from ai_classifier import get_learning_stats
+        stats = get_learning_stats()
+        print("\nAI Learning Statistics:")
+        print(f"  Total classifications: {stats['total_classifications']}")
+        print(f"  Unique patterns learned: {stats['unique_patterns']}")
+        print(f"  User corrections: {stats['corrections']}")
+        print("=" * 50)
+        return 0
+    
+    # Handle --undo flag
+    if args.undo:
+        print("\nUndoing last organization...")
+        result = undo_last_session()
+        if result["success"]:
+            print(f"\n✅ Restored {result['restored']} files")
+            if result["errors"] > 0:
+                print(f"⚠️  {result['errors']} files could not be restored")
+        else:
+            print(f"\n❌ {result['message']}")
+        print("=" * 50)
+        return 0 if result.get("success", False) else 1
+    
+    # Handle --history flag
+    if args.history:
+        history = get_history_summary()
+        if not history:
+            print("\nNo organization history found.")
+        else:
+            print("\nOrganization History:")
+            print("-" * 50)
+            for i, session in enumerate(reversed(history), 1):
+                status = "✓" if not session["undone"] else "↩ (undone)"
+                dry = " [dry-run]" if session["dry_run"] else ""
+                print(f"{i}. {session['timestamp'][:16]} - {session['files_moved']} files {status}{dry}")
+            print("-" * 50)
+        print("=" * 50)
+        return 0
+    
     # Use CLI args or fall back to interactive prompts (backward compatibility)
     source = args.source
     dest = args.dest
     
-    if source is None and dest is None and not args.dry_run:
+    # Handle --in-place flag (organize within source folder)
+    if args.in_place:
+        if source is None:
+            source = DEFAULT_SOURCE_DIR
+        dest = source  # Set destination to same as source
+        print(f"[IN-PLACE MODE] Organizing within: {source}")
+    
+    if source is None and dest is None and not args.dry_run and not args.in_place:
         # Interactive mode - maintain backward compatibility
         source = input(f"Source directory [{DEFAULT_SOURCE_DIR}]: ").strip() or None
         dest = input(f"Destination directory [{DEFAULT_DEST_DIR}]: ").strip() or None

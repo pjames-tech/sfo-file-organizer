@@ -5,9 +5,9 @@ Configuration settings for Smart File Organizer.
 import os
 from pathlib import Path
 
-# Default directories
+# Default directories (in-place organization by default)
 DEFAULT_SOURCE_DIR = str(Path.home() / "Downloads")
-DEFAULT_DEST_DIR = str(Path.home() / "Downloads" / "Organized")
+DEFAULT_DEST_DIR = DEFAULT_SOURCE_DIR  # Same as source for in-place organizing
 
 # File categories and their extensions
 FILE_CATEGORIES = {

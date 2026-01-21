@@ -2,10 +2,28 @@
 Rule-based file classification engine for Smart File Organizer.
 
 Provides keyword-based classification that takes priority over extension-based logic.
+Supports both built-in rules and user-defined custom rules from the UI.
 """
 
+import json
+from pathlib import Path
 from typing import Optional
 from config import FILE_CATEGORIES
+
+# Path to custom rules file (managed by rules_ui.py)
+CUSTOM_RULES_FILE = Path(__file__).parent / "custom_rules.json"
+
+
+def load_custom_rules() -> dict:
+    """Load user-defined custom rules from JSON file."""
+    if CUSTOM_RULES_FILE.exists():
+        try:
+            with open(CUSTOM_RULES_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return data.get("keyword_rules", {})
+        except Exception:
+            pass
+    return {}
 
 # Keyword rules: maps keywords (in filename) to categories
 # These take priority over extension-based classification
@@ -19,6 +37,18 @@ KEYWORD_RULES: dict[str, str] = {
     "cv": "Documents",
     "letter": "Documents",
     "statement": "Documents",
+    "certificate": "Documents",
+    "license": "Documents",
+    "agreement": "Documents",
+    "proposal": "Documents",
+    "quotation": "Documents",
+    "memo": "Documents",
+    "minutes": "Documents",
+    "payslip": "Documents",
+    "paystack": "Documents",
+    "merchant": "Documents",
+    "tax": "Documents",
+    "form": "Documents",
     
     # Image-related keywords
     "screenshot": "Images",
@@ -27,6 +57,24 @@ KEYWORD_RULES: dict[str, str] = {
     "banner": "Images",
     "logo": "Images",
     "icon": "Images",
+    "image": "Images",
+    "img": "Images",
+    "pic": "Images",
+    "picture": "Images",
+    "design": "Images",
+    "mockup": "Images",
+    "illustration": "Images",
+    "graphic": "Images",
+    "thumbnail": "Images",
+    "avatar": "Images",
+    "profile": "Images",
+    "cover": "Images",
+    "poster": "Images",
+    "flyer": "Images",
+    "infographic": "Images",
+    "diagram": "Images",
+    "chart": "Images",
+    "whatsapp image": "Images",  # WhatsApp pattern
     
     # Video-related keywords
     "video": "Videos",
@@ -34,21 +82,56 @@ KEYWORD_RULES: dict[str, str] = {
     "clip": "Videos",
     "recording": "Videos",
     "tutorial": "Videos",
+    "screencast": "Videos",
+    "webinar": "Videos",
+    "stream": "Videos",
+    "episode": "Videos",
+    "trailer": "Videos",
+    "vid": "Videos",
+    "whatsapp video": "Videos",  # WhatsApp pattern
     
     # Audio-related keywords
     "song": "Audio",
     "music": "Audio",
     "podcast": "Audio",
     "audiobook": "Audio",
+    "audio": "Audio",
+    "voice": "Audio",
+    "voicenote": "Audio",
+    "recording": "Audio",
+    "track": "Audio",
+    "beat": "Audio",
+    "ringtone": "Audio",
+    "whatsapp audio": "Audio",  # WhatsApp pattern
+    "whatsapp ptt": "Audio",  # WhatsApp voice note
     
     # Archive-related keywords
     "backup": "Archives",
     "archive": "Archives",
+    "compressed": "Archives",
+    "zipped": "Archives",
+    "bundle": "Archives",
+    "package": "Archives",
     
     # Code-related keywords
     "script": "Code",
     "source": "Code",
     "config": "Code",
+    "settings": "Code",
+    "env": "Code",
+    "api": "Code",
+    "sdk": "Code",
+    "lib": "Code",
+    "module": "Code",
+    "component": "Code",
+    
+    # Executables
+    "setup": "Executables",
+    "installer": "Executables",
+    "install": "Executables",
+    "portable": "Executables",
+    "crack": "Executables",
+    "keygen": "Executables",
 }
 
 
@@ -73,6 +156,13 @@ def classify_by_rules(filename: str) -> Optional[str]:
     """
     filename_lower = filename.lower()
     
+    # Check custom rules first (user-defined rules have highest priority)
+    custom_rules = load_custom_rules()
+    for keyword, category in custom_rules.items():
+        if keyword in filename_lower:
+            return category
+    
+    # Then check built-in rules
     for keyword, category in KEYWORD_RULES.items():
         if keyword in filename_lower:
             return category
