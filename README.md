@@ -10,18 +10,23 @@ A Python utility that automatically organizes files into categorized folders bas
 - 📊 **Statistics** - Summary report after organization
 - 🧪 **Dry-Run Mode** - Preview changes without moving files
 - 📝 **Structured Logging** - Console and file logging with configurable levels
-- 🤖 **AI-Ready** - Placeholder for future AI-powered classification
+- 🤖 **AI Classification** - Local AI with Ollama for intelligent sorting
+- 🖥️ **Desktop GUI** - User-friendly graphical interface for non-techies
+- 🌐 **Web Dashboard** - Full-featured web interface with stats and history
 
 ## Architecture
 
 ```text
 smart-file-organizer/
 ├── organizer.py        # Main CLI and orchestration
+├── gui.py              # Desktop GUI application (tkinter)
+├── dashboard.py        # Web-based dashboard
 ├── config.py           # Configuration and file categories
 ├── rules.py            # Rule-based classification engine
 ├── ai_classifier.py    # AI classification (Ollama)
 ├── history.py          # Undo/redo history management
 ├── logging_config.py   # Logging configuration
+├── rules_ui.py         # Simple rules manager UI
 ├── run_organizer.bat   # Windows Task Scheduler script
 ├── requirements.txt    # Dependencies
 └── tests/              # Unit tests
@@ -40,7 +45,7 @@ smart-file-organizer/
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/smart-file-organizer.git
+git clone https://github.com/pjames-tech/smart-file-organizer.git
 cd smart-file-organizer
 pip install -r requirements.txt
 ```
@@ -49,11 +54,54 @@ pip install -r requirements.txt
 
 ### Quick Start
 
+**For most users (Non-Techies):**
+
+1. Go to the [Releases](https://github.com/pjames-tech/smart-file-organizer/releases) page.
+2. Download the latest `Smart-File-Organizer.zip`.
+3. Extract and double-click `Smart File Organizer.exe`.
+
+**For developers:**
+
 ```bash
 python organizer.py --source ~/Downloads
 ```
 
 This organizes files **in-place** - category folders (Images, Documents, etc.) are created directly inside your Downloads folder.
+
+### Desktop GUI (Recommended for Non-Techies)
+
+Launch the graphical interface:
+
+```bash
+python gui.py
+```
+
+**Features:**
+
+- 📂 Browse and select any folder to organize
+- 🚀 **Organize Now** - One-click file organization
+- 👁️ **Preview Changes** - See what will happen before committing
+- ↩️ **Undo Last** - Restore files to their original locations
+- 📋 Activity log with colored output
+- 🤖 Optional AI classification toggle
+
+### Web Dashboard
+
+Launch the full-featured web interface:
+
+```bash
+python dashboard.py
+```
+
+Then open <http://localhost:8080> in your browser.
+
+**Dashboard Tabs:**
+
+- **📊 Dashboard** - Overview stats and quick action buttons
+- **🚀 Organize** - Select folder, preview, and organize files
+- **📋 Rules** - Manage custom keyword classification rules
+- **📜 History** - View past sessions and undo any of them
+- **⚙️ Settings** - Configure defaults and AI options
 
 ### CLI Mode
 

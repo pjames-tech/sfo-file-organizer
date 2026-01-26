@@ -17,6 +17,8 @@ env/
 # Logs
 *.log
 organizer.log
+organizer_history.json
+Compressed/
 
 # OS files
 .DS_Store
@@ -25,4 +27,5 @@ Thumbs.db
 # Distribution / packaging
 dist/
 build/
+Release/
 *.egg-info/
