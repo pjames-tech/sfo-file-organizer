@@ -14,9 +14,10 @@ A Python utility that automatically organizes files into categorized folders bas
 - 📝 **Structured Logging** - Console and file logging with configurable levels
 - 🖥️ **Modern Desktop UI** - Sleek dark-themed interface with:
   - **Scheduling**: Automate organization to run daily.
-  - **Flatten Directory**: Undo organization by moving files back to the root.
+  - **Flatten Directory**: Undo organization by moving files back to the root (only targets organizer-created folders).
   - **Watch Mode**: Real-time folder monitoring.
-- ↩️ **Undo Support** - Easily revert any organization session
+- ↩️ **Undo Support** - Easily revert any organization session (auto-cleans empty folders)
+- 🧠 **Smart Context** - Auto-detects folder purpose by name (Photos, Documents, etc.) for specialized sorting
 
 ## Architecture
 
@@ -77,10 +78,11 @@ python gui.py
 - 📂 Browse and select any folder to organize
 - 🚀 **Organize Now** - One-click file organization
 - 👁️ **Preview Changes** - See what will happen before committing
-- 🧹 **Flatten** - Move files out of subfolders back to the root
+- 🧹 **Flatten** - Move files out of organizer-created subfolders back to the root (preserves pre-existing folders)
 - ⏰ **Automation** - Schedule daily organization tasks
-- ↩️ **Undo Last** - Restore files to their original locations
+- ↩️ **Undo Last** - Restore files to their original locations and clean up empty folders
 - 📋 Activity log with colored output
+- 🧠 **Smart Context** - Enable to sort images by year or documents by type based on folder name
 - ⌚ **Watch Mode** - Real-time folder monitoring
 
 ### CLI Mode

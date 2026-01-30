@@ -179,17 +179,36 @@ def undo_last_session() -> dict:
             break
     save_history(history)
     
-    # Clean up empty category directories
+    # Clean up empty category directories (including nested ones and marker files)
     dest_dir = Path(session["dest_dir"])
     if dest_dir.exists():
-        for category_dir in dest_dir.iterdir():
-            if category_dir.is_dir():
+        # First pass: remove marker files from empty directories
+        for marker_file in dest_dir.rglob(".sfo_organized"):
+            try:
+                parent = marker_file.parent
+                # Check if directory only contains the marker file
+                contents = list(parent.iterdir())
+                if len(contents) == 1 and contents[0].name == ".sfo_organized":
+                    marker_file.unlink()
+                    logger.debug(f"Removed marker file: {marker_file}")
+            except Exception:
+                pass
+        
+        # Second pass: remove empty directories (bottom-up)
+        dirs_to_check = sorted(dest_dir.rglob("*"), key=lambda p: len(p.parts), reverse=True)
+        removed_count = 0
+        for dir_path in dirs_to_check:
+            if dir_path.is_dir():
                 try:
-                    if not any(category_dir.iterdir()):
-                        category_dir.rmdir()
-                        logger.debug(f"Removed empty directory: {category_dir}")
+                    if not any(dir_path.iterdir()):
+                        dir_path.rmdir()
+                        removed_count += 1
+                        logger.debug(f"Removed empty directory: {dir_path}")
                 except Exception:
                     pass
+        
+        if removed_count > 0:
+            logger.info(f"Cleaned up {removed_count} empty directories")
     
     return stats
 

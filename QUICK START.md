@@ -22,12 +22,13 @@ Both do the same thing—pick whichever you prefer!
 
 ### Extra Features
 
-| Feature           | Description                                       |
-| ----------------- | ------------------------------------------------- |
-| ⏰ **Automation** | Schedule daily organization at a set time.        |
-| 🧹 **Flatten**    | Move files out of subfolders back to the root.    |
-| ⌚ **Watch Mode** | Organize files automatically as you drop them in. |
-| 📜 **History**    | View and undo past organization sessions.         |
+| Feature              | Description                                                 |
+| -------------------- | ----------------------------------------------------------- |
+| ⏰ **Automation**    | Schedule daily organization at a set time.                  |
+| 🧹 **Flatten**       | Undo organization (only affects organizer-created folders). |
+| ⌚ **Watch Mode**    | Organize files automatically as you drop them in.           |
+| 📜 **History**       | View and undo past organization sessions.                   |
+| 🧠 **Smart Context** | Auto-detects folder type for specialized sorting.           |
 
 ---
 

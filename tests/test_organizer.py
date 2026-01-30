@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-from organizer import get_category, organize_files
+from organizer import get_category, organize_files, flatten_directory, ORGANIZER_MARKER
 
 
 class TestGetCategory:
@@ -163,3 +163,132 @@ class TestOrganizeFilesActual:
         # Check source is empty
         remaining = list(Path(temp_source_dir).iterdir())
         assert len(remaining) == 0
+
+
+class TestOrganizerMarker:
+    """Tests for the organizer marker file functionality."""
+    
+    @pytest.fixture
+    def temp_dir(self):
+        """Create a temporary directory."""
+        temp_dir = tempfile.mkdtemp()
+        yield temp_dir
+        shutil.rmtree(temp_dir, ignore_errors=True)
+    
+    def test_marker_file_created(self, temp_dir):
+        """Organizing should create marker files in category folders."""
+        from logging_config import setup_logging
+        setup_logging(level="WARNING", log_file=None)
+        
+        # Create test files
+        (Path(temp_dir) / "photo.jpg").touch()
+        (Path(temp_dir) / "report.pdf").touch()
+        
+        # Organize in-place
+        organize_files(source_dir=temp_dir, dest_dir=temp_dir, dry_run=False)
+        
+        # Check marker files exist
+        assert (Path(temp_dir) / "Images" / ORGANIZER_MARKER).exists()
+        assert (Path(temp_dir) / "Documents" / ORGANIZER_MARKER).exists()
+
+
+class TestFlattenDirectory:
+    """Tests for the flatten directory functionality."""
+    
+    @pytest.fixture
+    def temp_dir(self):
+        """Create a temporary directory."""
+        temp_dir = tempfile.mkdtemp()
+        yield temp_dir
+        shutil.rmtree(temp_dir, ignore_errors=True)
+    
+    def test_flatten_only_tagged_folders(self, temp_dir):
+        """Flatten should only process folders with the organizer marker."""
+        from logging_config import setup_logging
+        setup_logging(level="WARNING", log_file=None)
+        
+        source = Path(temp_dir)
+        
+        # Create a pre-existing folder (no marker) with files
+        preexisting = source / "MyFolder"
+        preexisting.mkdir()
+        (preexisting / "important.txt").touch()
+        
+        # Create organizer-tagged folder with files
+        tagged = source / "Images"
+        tagged.mkdir()
+        (tagged / ORGANIZER_MARKER).touch()
+        (tagged / "photo.jpg").touch()
+        
+        # Run flatten
+        stats = flatten_directory(str(source))
+        
+        # Pre-existing folder should be untouched
+        assert preexisting.exists()
+        assert (preexisting / "important.txt").exists()
+        
+        # Tagged folder files should be moved to root
+        assert (source / "photo.jpg").exists()
+        
+        # Tagged folder should be removed
+        assert not tagged.exists()
+        
+        # Check stats
+        assert stats["moved"] == 1
+        assert stats["skipped_dirs"] == 1
+    
+    def test_flatten_preserves_multiple_preexisting(self, temp_dir):
+        """Flatten should preserve all pre-existing folders."""
+        from logging_config import setup_logging
+        setup_logging(level="WARNING", log_file=None)
+        
+        source = Path(temp_dir)
+        
+        # Create multiple pre-existing folders
+        for name in ["Projects", "Work", "Personal"]:
+            folder = source / name
+            folder.mkdir()
+            (folder / f"{name.lower()}_file.txt").touch()
+        
+        # Create one tagged folder
+        tagged = source / "Documents"
+        tagged.mkdir()
+        (tagged / ORGANIZER_MARKER).touch()
+        (tagged / "doc.pdf").touch()
+        
+        # Run flatten
+        stats = flatten_directory(str(source))
+        
+        # All pre-existing folders should remain
+        for name in ["Projects", "Work", "Personal"]:
+            folder = source / name
+            assert folder.exists()
+            assert (folder / f"{name.lower()}_file.txt").exists()
+        
+        # Tagged folder should be flattened
+        assert (source / "doc.pdf").exists()
+        assert not tagged.exists()
+        
+        assert stats["skipped_dirs"] == 3
+    
+    def test_flatten_no_tagged_folders(self, temp_dir):
+        """Flatten should do nothing if no tagged folders exist."""
+        from logging_config import setup_logging
+        setup_logging(level="WARNING", log_file=None)
+        
+        source = Path(temp_dir)
+        
+        # Create only pre-existing folders (no markers)
+        folder = source / "MyFolder"
+        folder.mkdir()
+        (folder / "file.txt").touch()
+        
+        # Run flatten
+        stats = flatten_directory(str(source))
+        
+        # Nothing should change
+        assert folder.exists()
+        assert (folder / "file.txt").exists()
+        assert stats["moved"] == 0
+        assert stats["removed_dirs"] == 0
+

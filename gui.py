@@ -1151,14 +1151,27 @@ class SmartFileOrganizerGUI:
     def _handle_flatten_complete(self, stats):
         """Handle flatten completion."""
         self.set_running(False)
+        
+        if stats.get('moved', 0) == 0 and stats.get('removed_dirs', 0) == 0:
+            self.log("No organizer-created folders found to flatten.", "warning")
+            messagebox.showinfo(
+                "Nothing to Flatten", 
+                "No organizer-created folders found.\n\n"
+                "Only folders created by the organizer can be flattened."
+            )
+            return
+        
         self.log("Reset complete!", "success")
         self.log(f"  Files moved to root: {stats.get('moved', 0)}", "success")
         self.log(f"  Subfolders removed: {stats.get('removed_dirs', 0)}", "success")
+        if stats.get('skipped_dirs', 0) > 0:
+            self.log(f"  Pre-existing folders preserved: {stats.get('skipped_dirs', 0)}", "info")
         
-        messagebox.showinfo(
-            "Reset Complete", 
-            f"Folder has been flattened.\n\nFiles moved: {stats.get('moved', 0)}\nFolders removed: {stats.get('removed_dirs', 0)}"
-        )
+        msg = f"Folder has been flattened.\n\nFiles moved: {stats.get('moved', 0)}\nFolders removed: {stats.get('removed_dirs', 0)}"
+        if stats.get('skipped_dirs', 0) > 0:
+            msg += f"\nPre-existing folders preserved: {stats.get('skipped_dirs', 0)}"
+        
+        messagebox.showinfo("Reset Complete", msg)
 
     def toggle_schedule(self):
         """Enable or disable the daily schedule."""
@@ -1274,17 +1287,16 @@ class SmartFileOrganizerGUI:
         self.set_running(False)
         
         mode = "Preview" if dry_run else "Organization"
-        total = sum(stats.get("stats", {}).values()) if stats else 0
+        # organize_files returns {"moved": X, "skipped": Y, "errors": Z}
+        total = stats.get("moved", 0) if stats else 0
         
         self.log(f"\n{mode} complete!", "success")
+        self.log(f"  Files organized: {total}", "success")
         
-        if stats and stats.get("stats"):
-            self.log("Files by category:", "info")
-            for category, count in stats["stats"].items():
-                if count > 0:
-                    self.log(f"  📁 {category}: {count} files", "success")
-        
-        self.log(f"Total: {total} files {'would be' if dry_run else ''} organized", "success")
+        if stats.get("skipped", 0) > 0:
+            self.log(f"  Skipped (directories): {stats.get('skipped', 0)}", "info")
+        if stats.get("errors", 0) > 0:
+            self.log(f"  Errors: {stats.get('errors', 0)}", "warning")
         
         if not dry_run and total > 0:
             messagebox.showinfo(
@@ -1297,17 +1309,31 @@ class SmartFileOrganizerGUI:
         self.set_running(False)
         
         if stats.get("success"):
-            self.log(f"Undo complete!", "success")
-            self.log(f"  Files restored: {stats.get('restored', 0)}", "success")
-            if stats.get("errors", 0) > 0:
-                self.log(f"  Errors: {stats.get('errors', 0)}", "warning")
-            
-            messagebox.showinfo(
-                "Undo Complete",
-                f"Successfully restored {stats.get('restored', 0)} files."
-            )
+            restored = stats.get('restored', 0)
+            if restored > 0:
+                self.log("Undo complete!", "success")
+                self.log(f"  Files restored: {restored}", "success")
+                if stats.get("errors", 0) > 0:
+                    self.log(f"  Errors: {stats.get('errors', 0)}", "warning")
+                
+                messagebox.showinfo(
+                    "Undo Complete",
+                    f"Successfully restored {restored} files."
+                )
+            else:
+                self.log("Undo complete - no files needed restoring.", "info")
+                messagebox.showinfo(
+                    "Undo Complete",
+                    "No files needed to be restored.\n\nThe files may have already been moved or deleted."
+                )
         else:
-            self.log(f"Undo failed: {stats.get('message', 'Unknown error')}", "error")
+            msg = stats.get('message', 'Unknown error')
+            if "No session to undo" in msg:
+                self.log("No previous sessions to undo.", "info")
+                messagebox.showinfo("No History", "No previous organization sessions to undo.")
+            else:
+                self.log(f"Undo failed: {msg}", "error")
+                messagebox.showerror("Undo Failed", msg)
     
 
 

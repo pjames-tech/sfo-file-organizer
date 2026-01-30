@@ -31,6 +31,9 @@ from logging_config import setup_logging, get_logger
 from rules import classify_file, classify_by_rules
 from history import start_session, record_movement, save_session, undo_last_session, get_history_summary
 
+# Hidden marker file to identify folders created by the organizer
+ORGANIZER_MARKER = ".sfo_organized"
+
 
 def get_category(file_extension: str) -> str:
     """
@@ -55,9 +58,37 @@ def get_category(file_extension: str) -> str:
 
 def detect_folder_context(source_path: Path) -> str:
     """
-    Analyze folder content to determine its primary context.
+    Analyze folder to determine its primary context.
+    First checks the folder name, then falls back to file content analysis.
     Returns: 'Images', 'Documents', or 'Mixed'
     """
+    # First, check the folder name for context hints
+    folder_name = source_path.name.lower()
+    
+    # Generic folders that should use standard (Mixed) sorting - no special context
+    generic_folder_names = ['downloads', 'desktop', 'temp', 'tmp', 'new folder']
+    for name in generic_folder_names:
+        if name in folder_name:
+            return "Mixed"
+    
+    # Common folder names that indicate image context
+    image_folder_names = ['photos', 'pictures', 'images', 'screenshots', 'camera', 
+                          'dcim', 'wallpapers', 'gallery', 'pics']
+    
+    # Common folder names that indicate document context
+    document_folder_names = ['documents', 'docs', 'papers', 'reports', 'invoices',
+                             'contracts', 'receipts', 'pdfs', 'work', 'office']
+    
+    # Check folder name first
+    for name in image_folder_names:
+        if name in folder_name:
+            return "Images"
+    
+    for name in document_folder_names:
+        if name in folder_name:
+            return "Documents"
+    
+    # Fall back to analyzing file contents
     counts = {"Images": 0, "Documents": 0, "Total": 0}
     
     for item in source_path.iterdir():
@@ -189,6 +220,17 @@ def organize_files(
                 
                 if not dry_run:
                     category_dir.mkdir(parents=True, exist_ok=True)
+                    # Mark this folder as created by the organizer
+                    marker_path = category_dir / ORGANIZER_MARKER
+                    if not marker_path.exists():
+                        marker_path.touch()
+                        # Make the marker hidden on Windows
+                        if os.name == 'nt':
+                            try:
+                                import ctypes
+                                ctypes.windll.kernel32.SetFileAttributesW(str(marker_path), 2)
+                            except Exception:
+                                pass  # Silently ignore if we can't set attributes
                 
                 dest_path = category_dir / file_path.name
                 
@@ -234,28 +276,43 @@ def organize_files(
 
 def flatten_directory(source_dir: str) -> dict:
     """
-    Move all files from subdirectories back to the source root and remove empty folders.
+    Move all files from organizer-created subdirectories back to the source root.
+    Only flattens folders that contain the .sfo_organized marker file.
     Records operations for Undo.
     """
     logger = get_logger()
     source = Path(source_dir)
-    stats = {"moved": 0, "errors": 0, "removed_dirs": 0}
+    stats = {"moved": 0, "errors": 0, "removed_dirs": 0, "skipped_dirs": 0}
     
     if not source.exists() or not source.is_dir():
         logger.error(f"Invalid source directory: {source}")
         return stats
 
-    # Start session for Undo
-    session = start_session(str(source), str(source), dry_run=False) # flattening is in-place
+    # Find all subdirectories that have the organizer marker (first level only)
+    tagged_dirs = [d for d in source.iterdir() 
+                   if d.is_dir() and (d / ORGANIZER_MARKER).exists()]
     
-    # Get all files using rglob (recursive)
-    files = [p for p in source.rglob("*") if p.is_file()]
+    if not tagged_dirs:
+        logger.info("No organizer-created folders found to flatten.")
+        return stats
+    
+    # Count pre-existing (untagged) directories for logging
+    all_subdirs = [d for d in source.iterdir() if d.is_dir()]
+    untagged_count = len(all_subdirs) - len(tagged_dirs)
+    if untagged_count > 0:
+        logger.info(f"Preserving {untagged_count} pre-existing folder(s).")
+        stats["skipped_dirs"] = untagged_count
+
+    # Start session for Undo
+    session = start_session(str(source), str(source), dry_run=False)
+    
+    # Get files only from tagged directories (recursive within those dirs)
+    files = []
+    for tagged_dir in tagged_dirs:
+        files.extend([p for p in tagged_dir.rglob("*") 
+                      if p.is_file() and p.name != ORGANIZER_MARKER])
     
     for file_path in files:
-        # Skip files already in the root
-        if file_path.parent == source:
-            continue
-            
         try:
             dest_path = source / file_path.name
             
@@ -280,18 +337,36 @@ def flatten_directory(source_dir: str) -> dict:
         except Exception as e:
             logger.error(f"Error moving {file_path}: {e}")
             stats["errors"] += 1
-            
-    # Now remove empty directories (bottom-up)
-    for dir_path in sorted(source.rglob("*"), key=lambda p: len(p.parts), reverse=True):
-        if dir_path.is_dir() and dir_path != source:
-            try:
-                # Only remove if empty
-                if not any(dir_path.iterdir()):
-                    dir_path.rmdir()
-                    stats["removed_dirs"] += 1
-                    logger.info(f"Removed empty dir: {dir_path}")
-            except Exception as e:
-                pass
+    
+    # Remove tagged directories (including marker files) - bottom-up
+    for tagged_dir in tagged_dirs:
+        # First remove the marker file
+        marker_path = tagged_dir / ORGANIZER_MARKER
+        try:
+            if marker_path.exists():
+                marker_path.unlink()
+        except Exception:
+            pass
+        
+        # Remove any empty subdirectories within the tagged dir (bottom-up)
+        for dir_path in sorted(tagged_dir.rglob("*"), key=lambda p: len(p.parts), reverse=True):
+            if dir_path.is_dir():
+                try:
+                    if not any(dir_path.iterdir()):
+                        dir_path.rmdir()
+                        stats["removed_dirs"] += 1
+                        logger.info(f"Removed empty dir: {dir_path}")
+                except Exception:
+                    pass
+        
+        # Finally remove the tagged directory itself if empty
+        try:
+            if not any(tagged_dir.iterdir()):
+                tagged_dir.rmdir()
+                stats["removed_dirs"] += 1
+                logger.info(f"Removed organizer dir: {tagged_dir.name}")
+        except Exception as e:
+            logger.warning(f"Could not remove {tagged_dir.name}: {e}")
     
     # Save the session
     save_session(session)

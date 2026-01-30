@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Smart File Organizer"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "PJames Tech"
 #define MyAppURL "https://github.com/pjames-tech"
 #define MyAppExeName "Smart File Organizer.exe"
