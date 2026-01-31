@@ -90,21 +90,45 @@ smart-file-organizer/
 
 ## Installation
 
+### Option 1: Install via pip (Recommended for all platforms)
+
+```bash
+pip install smart-file-organizer
+```
+
+Then run:
+
+```bash
+smart-file-organizer      # Launch GUI
+sfo                       # Shortcut for GUI
+sfo-cli --source ~/Downloads  # CLI mode
+```
+
+### Option 2: Download Pre-built Executable
+
+| Platform    | Download                                                                                                                                          |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Windows** | [Smart-File-Organizer-Windows.exe](https://github.com/pjames-tech/smart-file-organizer/releases/latest/download/Smart-File-Organizer-Windows.exe) |
+| **macOS**   | [Smart-File-Organizer-macOS.zip](https://github.com/pjames-tech/smart-file-organizer/releases/latest/download/Smart-File-Organizer-macOS.zip)     |
+| **Linux**   | [Smart-File-Organizer-Linux](https://github.com/pjames-tech/smart-file-organizer/releases/latest/download/Smart-File-Organizer-Linux)             |
+
+### Option 3: Run from Source
+
 ```bash
 git clone https://github.com/pjames-tech/smart-file-organizer.git
 cd smart-file-organizer
 pip install -r requirements.txt
+python gui.py
 ```
 
 ## Usage
 
 ### Quick Start
 
-**For most users (Non-Techies):**
-
-1. Go to the [Releases](https://github.com/pjames-tech/smart-file-organizer/releases) page.
-2. Download the latest `Smart-File-Organizer.zip`.
-3. Extract and double-click `Smart File Organizer.exe`.
+1. **Install** using one of the methods above.
+2. **Launch** the application (GUI or CLI).
+3. **Select** the folder you want to organize.
+4. **Click "Organize Now"** and watch your files get sorted!
 
 ## 👁️ Watch Mode
 
