@@ -48,6 +48,7 @@ A Python utility that automatically organizes files into categorized folders bas
    ```
 
 4. **Or run the CLI:**
+
    ```bash
    python organizer.py --source ~/Downloads
    ```
