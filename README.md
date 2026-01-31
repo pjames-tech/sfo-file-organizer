@@ -106,11 +106,11 @@ sfo-cli --source ~/Downloads  # CLI mode
 
 ### Option 2: Download Pre-built Executable
 
-| Platform    | Download                                                                                                                                        |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Windows** | [Smart-File-Organizer-Windows.exe](https://github.com/pjames-tech/sfo-file-organizer/releases/latest/download/Smart-File-Organizer-Windows.exe) |
-| **macOS**   | [Smart-File-Organizer-macOS.zip](https://github.com/pjames-tech/sfo-file-organizer/releases/latest/download/Smart-File-Organizer-macOS.zip)     |
-| **Linux**   | [Smart-File-Organizer-Linux](https://github.com/pjames-tech/sfo-file-organizer/releases/latest/download/Smart-File-Organizer-Linux)             |
+| Platform    | Download                                                                                                                                    |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Windows** | [SFO-File-Organizer-Windows.exe](https://github.com/pjames-tech/sfo-file-organizer/releases/latest/download/SFO-File-Organizer-Windows.exe) |
+| **macOS**   | [SFO-File-Organizer-macOS.zip](https://github.com/pjames-tech/sfo-file-organizer/releases/latest/download/SFO-File-Organizer-macOS.zip)     |
+| **Linux**   | [SFO-File-Organizer-Linux](https://github.com/pjames-tech/sfo-file-organizer/releases/latest/download/SFO-File-Organizer-Linux)             |
 
 ### Option 3: Run from Source
 
