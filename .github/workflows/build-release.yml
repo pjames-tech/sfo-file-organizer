@@ -12,13 +12,13 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            artifact_name: SFO File Organizer.exe
+            build_name: SFO File Organizer
             asset_name: SFO-File-Organizer-Windows.exe
           - os: macos-latest
-            artifact_name: SFO File Organizer.app
+            build_name: SFO File Organizer
             asset_name: SFO-File-Organizer-macOS.zip
           - os: ubuntu-latest
-            artifact_name: SFO File Organizer
+            build_name: SFO File Organizer
             asset_name: SFO-File-Organizer-Linux
 
     runs-on: ${{ matrix.os }}
@@ -48,51 +48,35 @@ jobs:
       - name: Build executable (Windows)
         if: runner.os == 'Windows'
         run: |
-          pyinstaller --onefile --windowed --name "SFO File Organizer" --icon=app_icon.ico --add-data "custom_rules.json;." --add-data "app_icon.ico;." --add-data "app_icon.png;." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          pyinstaller --onefile --windowed --name "${{ matrix.build_name }}" --icon=app_icon.ico --add-data "custom_rules.json;." --add-data "app_icon.ico;." --add-data "app_icon.png;." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          # Rename to release asset name (no spaces)
+          move "dist\${{ matrix.build_name }}.exe" "dist\${{ matrix.asset_name }}"
 
       - name: Build executable (macOS)
         if: runner.os == 'macOS'
         run: |
-          pyinstaller --onedir --windowed --name "SFO File Organizer" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          pyinstaller --onedir --windowed --name "${{ matrix.build_name }}" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          # Zip and rename to release asset name
+          cd dist
+          zip -r "${{ matrix.asset_name }}" "${{ matrix.build_name }}.app"
 
       - name: Build executable (Linux)
         if: runner.os == 'Linux'
         run: |
-          pyinstaller --onefile --name "SFO File Organizer" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          pyinstaller --onefile --name "${{ matrix.build_name }}" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          # Rename to release asset name (no spaces)
+          mv "dist/${{ matrix.build_name }}" "dist/${{ matrix.asset_name }}"
 
-      # Zip the macOS .app bundle
-      - name: Package macOS app
-        if: runner.os == 'macOS'
-        run: |
-          cd dist
-          zip -r "SFO-File-Organizer-macOS.zip" "SFO File Organizer.app"
-
-      - name: Upload artifact (Windows/Linux)
-        if: runner.os != 'macOS'
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset_name }}
-          path: dist/${{ matrix.artifact_name }}
+          path: dist/${{ matrix.asset_name }}
 
-      - name: Upload artifact (macOS)
-        if: runner.os == 'macOS'
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.asset_name }}
-          path: dist/SFO-File-Organizer-macOS.zip
-
-      - name: Upload to Release (Windows/Linux)
-        if: github.event_name == 'release' && runner.os != 'macOS'
+      - name: Upload to Release
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/${{ matrix.artifact_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload to Release (macOS)
-        if: github.event_name == 'release' && runner.os == 'macOS'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/SFO-File-Organizer-macOS.zip
+          files: dist/${{ matrix.asset_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
