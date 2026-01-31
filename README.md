@@ -1,4 +1,4 @@
-# Smart File Organizer
+# SFO File Organizer
 
 A Python utility that automatically organizes files into categorized folders based on their file types, with support for rule-based classification, structured logging, and real-time monitoring.
 
