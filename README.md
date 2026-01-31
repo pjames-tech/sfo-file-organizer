@@ -93,7 +93,7 @@ smart-file-organizer/
 ### Option 1: Install via pip (Recommended for all platforms)
 
 ```bash
-pip install smart-file-organizer
+pip install sfo-file-organizer
 ```
 
 Then run:
