@@ -8,14 +8,15 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false # Don't cancel other builds if one fails
       matrix:
         include:
           - os: windows-latest
             artifact_name: Smart File Organizer.exe
             asset_name: Smart-File-Organizer-Windows.exe
           - os: macos-latest
-            artifact_name: Smart File Organizer
-            asset_name: Smart-File-Organizer-macOS
+            artifact_name: Smart File Organizer.app
+            asset_name: Smart-File-Organizer-macOS.zip
           - os: ubuntu-latest
             artifact_name: Smart File Organizer
             asset_name: Smart-File-Organizer-Linux
@@ -52,23 +53,46 @@ jobs:
       - name: Build executable (macOS)
         if: runner.os == 'macOS'
         run: |
-          pyinstaller --onefile --windowed --name "Smart File Organizer" --icon=app_icon.png --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          pyinstaller --onedir --windowed --name "Smart File Organizer" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
 
       - name: Build executable (Linux)
         if: runner.os == 'Linux'
         run: |
-          pyinstaller --onefile --windowed --name "Smart File Organizer" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          pyinstaller --onefile --name "Smart File Organizer" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
 
-      - name: Upload artifact
+      # Zip the macOS .app bundle
+      - name: Package macOS app
+        if: runner.os == 'macOS'
+        run: |
+          cd dist
+          zip -r "Smart-File-Organizer-macOS.zip" "Smart File Organizer.app"
+
+      - name: Upload artifact (Windows/Linux)
+        if: runner.os != 'macOS'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset_name }}
           path: dist/${{ matrix.artifact_name }}
 
-      - name: Upload to Release
-        if: github.event_name == 'release'
+      - name: Upload artifact (macOS)
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: dist/Smart-File-Organizer-macOS.zip
+
+      - name: Upload to Release (Windows/Linux)
+        if: github.event_name == 'release' && runner.os != 'macOS'
         uses: softprops/action-gh-release@v1
         with:
           files: dist/${{ matrix.artifact_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to Release (macOS)
+        if: github.event_name == 'release' && runner.os == 'macOS'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/Smart-File-Organizer-macOS.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
