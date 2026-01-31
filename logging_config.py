@@ -1,5 +1,5 @@
 """
-Logging configuration for Smart File Organizer.
+Logging configuration for SFO File Organizer.
 
 Provides structured logging with console and file output support.
 """

@@ -1,5 +1,5 @@
 """
-History tracking module for Smart File Organizer.
+History tracking module for SFO File Organizer.
 
 Tracks file movements to enable undo functionality.
 """

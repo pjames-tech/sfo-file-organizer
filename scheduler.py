@@ -15,7 +15,7 @@ def create_scheduled_task(time_str: str, source_dir: str):
     Returns:
         tuple: (success (bool), message (str))
     """
-    task_name = "SmartFileOrganizer_Auto"
+    task_name = "SFOFileOrganizer_Auto"
     
     # Determine what to run (the script or the exe)
     if getattr(sys, 'frozen', False):
@@ -63,7 +63,7 @@ def create_scheduled_task(time_str: str, source_dir: str):
 
 def delete_scheduled_task():
     """Remove the scheduled task."""
-    task_name = "SmartFileOrganizer_Auto"
+    task_name = "SFOFileOrganizer_Auto"
     try:
         subprocess.run(
             ["schtasks", "/delete", "/tn", task_name, "/f"],

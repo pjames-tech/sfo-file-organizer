@@ -12,14 +12,14 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            artifact_name: Smart File Organizer.exe
-            asset_name: Smart-File-Organizer-Windows.exe
+            artifact_name: SFO File Organizer.exe
+            asset_name: SFO-File-Organizer-Windows.exe
           - os: macos-latest
-            artifact_name: Smart File Organizer.app
-            asset_name: Smart-File-Organizer-macOS.zip
+            artifact_name: SFO File Organizer.app
+            asset_name: SFO-File-Organizer-macOS.zip
           - os: ubuntu-latest
-            artifact_name: Smart File Organizer
-            asset_name: Smart-File-Organizer-Linux
+            artifact_name: SFO File Organizer
+            asset_name: SFO-File-Organizer-Linux
 
     runs-on: ${{ matrix.os }}
 
@@ -48,24 +48,24 @@ jobs:
       - name: Build executable (Windows)
         if: runner.os == 'Windows'
         run: |
-          pyinstaller --onefile --windowed --name "Smart File Organizer" --icon=app_icon.ico --add-data "custom_rules.json;." --add-data "app_icon.ico;." --add-data "app_icon.png;." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          pyinstaller --onefile --windowed --name "SFO File Organizer" --icon=app_icon.ico --add-data "custom_rules.json;." --add-data "app_icon.ico;." --add-data "app_icon.png;." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
 
       - name: Build executable (macOS)
         if: runner.os == 'macOS'
         run: |
-          pyinstaller --onedir --windowed --name "Smart File Organizer" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          pyinstaller --onedir --windowed --name "SFO File Organizer" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
 
       - name: Build executable (Linux)
         if: runner.os == 'Linux'
         run: |
-          pyinstaller --onefile --name "Smart File Organizer" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
+          pyinstaller --onefile --name "SFO File Organizer" --add-data "custom_rules.json:." --add-data "app_icon.ico:." --add-data "app_icon.png:." --hidden-import=app_config --hidden-import=organizer --hidden-import=history --hidden-import=rules --hidden-import=scheduler --hidden-import=watchdog gui.py
 
       # Zip the macOS .app bundle
       - name: Package macOS app
         if: runner.os == 'macOS'
         run: |
           cd dist
-          zip -r "Smart-File-Organizer-macOS.zip" "Smart File Organizer.app"
+          zip -r "SFO-File-Organizer-macOS.zip" "SFO File Organizer.app"
 
       - name: Upload artifact (Windows/Linux)
         if: runner.os != 'macOS'
@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset_name }}
-          path: dist/Smart-File-Organizer-macOS.zip
+          path: dist/SFO-File-Organizer-macOS.zip
 
       - name: Upload to Release (Windows/Linux)
         if: github.event_name == 'release' && runner.os != 'macOS'
@@ -93,6 +93,6 @@ jobs:
         if: github.event_name == 'release' && runner.os == 'macOS'
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/Smart-File-Organizer-macOS.zip
+          files: dist/SFO-File-Organizer-macOS.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

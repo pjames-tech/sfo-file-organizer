@@ -1,5 +1,5 @@
 """
-Rule-based file classification engine for Smart File Organizer.
+Rule-based file classification engine for SFO File Organizer.
 
 Provides keyword-based classification that takes priority over extension-based logic.
 Supports both built-in rules and user-defined custom rules from the UI.

@@ -1,4 +1,4 @@
-# Smart File Organizer Dependencies
+# SFO File Organizer Dependencies
 
 # Core
 watchdog>=3.0.0

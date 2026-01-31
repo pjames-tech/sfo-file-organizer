@@ -1,11 +1,11 @@
 @echo off
-REM Smart File Organizer - Scheduled Task Script
+REM SFO File Organizer - Scheduled Task Script
 REM Run this script manually or via Windows Task Scheduler
 
-cd /d "c:\Users\Victor\Documents\Coding\smart-file-organizer"
+cd /d "c:\Users\Victor\Documents\Coding\sfo-file-organizer"
 
 echo ============================================
-echo Smart File Organizer - Scheduled Run
+echo SFO File Organizer - Scheduled Run
 echo ============================================
 echo Started at: %date% %time%
 echo.

@@ -1,14 +1,14 @@
 @echo off
-:: Smart File Organizer - First Time Setup
+:: SFO File Organizer - First Time Setup
 :: Run this ONCE after downloading the application
 
-title Smart File Organizer - First Time Setup
+title SFO File Organizer - First Time Setup
 
 cd /d "%~dp0"
 
 echo.
 echo ========================================================
-echo      SMART FILE ORGANIZER - FIRST TIME SETUP
+echo      SFO FILE ORGANIZER - FIRST TIME SETUP
 echo ========================================================
 echo.
 echo This will set up everything you need to get started.

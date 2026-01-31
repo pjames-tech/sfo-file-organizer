@@ -3,7 +3,7 @@ import pytest
 from rules import classify_file
 from unittest.mock import MagicMock, patch
 import tkinter as tk
-from gui import SmartFileOrganizerGUI
+from gui import SFOFileOrganizerGUI
 
 def test_txt_classification_with_keywords():
     """Test that .txt files go to Documents even with image keywords."""
@@ -14,7 +14,7 @@ def test_txt_classification_with_keywords():
 def test_undo_disabled_in_watch_mode():
     """Test that Undo is disabled when Watch Mode is active."""
     root = tk.Tk()
-    app = SmartFileOrganizerGUI(root)
+    app = SFOFileOrganizerGUI(root)
     
     # Enable Watch Mode
     app.watch_mode.set(True)

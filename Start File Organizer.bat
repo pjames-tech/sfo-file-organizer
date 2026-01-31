@@ -1,8 +1,8 @@
 @echo off
-:: Smart File Organizer - Desktop GUI Launcher
+:: SFO File Organizer - Desktop GUI Launcher
 :: Double-click this file to open the application!
 
-title Smart File Organizer
+title SFO File Organizer
 
 :: Change to the script directory
 cd /d "%~dp0"
@@ -25,7 +25,7 @@ if errorlevel 1 (
 )
 
 :: Launch the GUI
-echo Starting Smart File Organizer...
+echo Starting SFO File Organizer...
 pythonw gui.py
 
 :: If pythonw fails, try python (will show console briefly)

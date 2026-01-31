@@ -1,8 +1,8 @@
 @echo off
-:: Smart File Organizer - Release Packager
+:: SFO File Organizer - Release Packager
 :: Prepares a clean folder ready to be zipped and sent to users
 
-title Smart File Organizer - Packaging Release
+title SFO File Organizer - Packaging Release
 
 cd /d "%~dp0"
 
@@ -13,7 +13,7 @@ echo ========================================================
 echo.
 
 :: 1. Check if EXE exists
-if not exist "dist\Smart File Organizer.exe" (
+if not exist "dist\SFO File Organizer.exe" (
     echo Error: Executable not found!
     echo Please run BUILD_EXE.bat first.
     echo.
@@ -57,7 +57,7 @@ if exist "%USERPROFILE%\AppData\Local\Programs\Inno Setup 6\ISCC.exe" (
 
 :: Not found
 echo Inno Setup not found. Skipping installer creation.
-echo (Install Inno Setup 6 to generate 'SmartFileOrganizer_Setup.exe')
+echo (Install Inno Setup 6 to generate 'SFOFileOrganizer_Setup.exe')
 echo.
 echo If you have Inno Setup installed elsewhere, add it to your PATH or
 echo edit this script to include the correct location.
@@ -84,14 +84,14 @@ mkdir "Release"
 echo Copying files to Release...
 
 :: Copy Standalone EXE
-if exist "dist\Smart File Organizer.exe" (
-    copy "dist\Smart File Organizer.exe" "Release\" >nul
+if exist "dist\SFO File Organizer.exe" (
+    copy "dist\SFO File Organizer.exe" "Release\" >nul
     echo [OK] Standalone EXE copied.
 )
 
 :: Copy Installer (if it was built)
-if exist "Installer\SmartFileOrganizer_Setup.exe" (
-    copy "Installer\SmartFileOrganizer_Setup.exe" "Release\" >nul
+if exist "Installer\SFOFileOrganizer_Setup.exe" (
+    copy "Installer\SFOFileOrganizer_Setup.exe" "Release\" >nul
     echo [OK] Installer copied.
 )
 
@@ -104,8 +104,8 @@ echo                   PACKAGE READY!
 echo ========================================================
 echo.
 echo The "Release" folder now contains:
-if exist "Release\Smart File Organizer.exe" echo  - Standalone Application
-if exist "Release\SmartFileOrganizer_Setup.exe" echo  - Installer (Setup)
+if exist "Release\SFO File Organizer.exe" echo  - Standalone Application
+if exist "Release\SFOFileOrganizer_Setup.exe" echo  - Installer (Setup)
 echo.
 echo You can zip this folder and share it!
 echo.

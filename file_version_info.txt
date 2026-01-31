@@ -29,13 +29,13 @@ VSVersionInfo(
       [
       StringTable(
         u'040904B0',
-        [StringStruct(u'CompanyName', u'Smart-File-Organizer'),
-        StringStruct(u'FileDescription', u'Smart File Organizer - Automated File Management'),
+        [StringStruct(u'CompanyName', u'SFO-File-Organizer'),
+        StringStruct(u'FileDescription', u'SFO File Organizer - Automated File Management'),
         StringStruct(u'FileVersion', u'1.2.0'),
-        StringStruct(u'InternalName', u'Smart File Organizer'),
-        StringStruct(u'LegalCopyright', u'Copyright (c) 2026 Smart-File-Organizer'),
-        StringStruct(u'OriginalFilename', u'Smart File Organizer.exe'),
-        StringStruct(u'ProductName', u'Smart File Organizer'),
+        StringStruct(u'InternalName', u'SFO File Organizer'),
+        StringStruct(u'LegalCopyright', u'Copyright (c) 2026 SFO-File-Organizer'),
+        StringStruct(u'OriginalFilename', u'SFO File Organizer.exe'),
+        StringStruct(u'ProductName', u'SFO File Organizer'),
         StringStruct(u'ProductVersion', u'1.2.0')])
       ]), 
     VarFileInfo([VarStruct(u'Translation', [1033, 1200])])

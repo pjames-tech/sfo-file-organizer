@@ -1,1 +1,1 @@
-# Smart File Organizer Tests
+# SFO File Organizer Tests

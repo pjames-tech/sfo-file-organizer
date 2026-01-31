@@ -1,5 +1,5 @@
 """
-Configuration settings for Smart File Organizer.
+Configuration settings for SFO File Organizer.
 """
 
 import os
@@ -22,7 +22,7 @@ def get_data_dir() -> Path:
         # Running as bundled exe
         app_data = os.getenv('APPDATA')
         if app_data:
-            path = Path(app_data) / "SmartFileOrganizer"
+            path = Path(app_data) / "SFOFileOrganizer"
         else:
             path = Path(sys.executable).parent / "data"
     else:
@@ -41,7 +41,7 @@ def get_data_dir() -> Path:
 # Data directory for persistent storage (History, Custom Rules)
 # We use APPDATA to ensure data survives app updates/moves
 APPDATA_PATH = os.environ.get("APPDATA", os.path.expanduser("~"))
-DATA_DIR = Path(APPDATA_PATH) / "SmartFileOrganizer"
+DATA_DIR = Path(APPDATA_PATH) / "SFOFileOrganizer"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # Define paths for data files

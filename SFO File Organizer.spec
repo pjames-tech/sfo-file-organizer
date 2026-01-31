@@ -35,7 +35,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='Smart File Organizer',
+    name='SFO File Organizer',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

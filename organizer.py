@@ -1,5 +1,5 @@
 """
-Smart File Organizer
+SFO File Organizer
 Automatically organizes files in a directory based on their types.
 
 Features:
@@ -444,7 +444,7 @@ def parse_args() -> argparse.Namespace:
         Parsed arguments namespace.
     """
     parser = argparse.ArgumentParser(
-        description="Smart File Organizer - Automatically organize files by type",
+        description="SFO File Organizer - Automatically organize files by type",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -533,10 +533,10 @@ def main() -> int:
     logger = get_logger()
     
     print("=" * 50)
-    print("Smart File Organizer")
+    print("SFO File Organizer")
     print("=" * 50)
     
-    print("Smart File Organizer")
+    print("SFO File Organizer")
     print("=" * 50)
     
     # Handle --undo flag

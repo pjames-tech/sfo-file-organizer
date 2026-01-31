@@ -1,13 +1,13 @@
-# 📁 Smart File Organizer
+# 📁 SFO File Organizer
 
 ## Getting Started
 
 **Choose how you want to run:**
 
-| File                           | What To Do                                                   |
-| ------------------------------ | ------------------------------------------------------------ |
-| `Smart File Organizer.exe`     | **Portable** – Just double-click and run. No install needed. |
-| `SmartFileOrganizer_Setup.exe` | **Installer** – Creates Start Menu & Desktop shortcuts.      |
+| File                         | What To Do                                                   |
+| ---------------------------- | ------------------------------------------------------------ |
+| `SFO File Organizer.exe`     | **Portable** – Just double-click and run. No install needed. |
+| `SFOFileOrganizer_Setup.exe` | **Installer** – Creates Start Menu & Desktop shortcuts.      |
 
 Both do the same thing—pick whichever you prefer!
 

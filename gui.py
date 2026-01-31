@@ -1,7 +1,7 @@
 """
-Smart File Organizer - Desktop GUI
+SFO File Organizer - Desktop GUI
 
-A user-friendly graphical interface for the Smart File Organizer.
+A user-friendly graphical interface for the SFO File Organizer.
 Designed for both technical and non-technical users.
 
 Run with: python gui.py
@@ -387,7 +387,7 @@ class ScrollableFrame(ttk.Frame):
                 self.canvas.yview_scroll(1, "units")
 
 
-class SmartFileOrganizerGUI:
+class SFOFileOrganizerGUI:
     """Main GUI application class."""
     
     def set_icon(self, window):
@@ -426,7 +426,7 @@ class SmartFileOrganizerGUI:
         self.root = root
         self.set_icon(self.root)
         
-        self.root.title("Smart File Organizer")
+        self.root.title("SFO File Organizer")
         self.root.geometry("800x700")
         self.root.minsize(600, 500)
         
@@ -645,7 +645,7 @@ class SmartFileOrganizerGUI:
         title_box = ttk.Frame(header_frame)
         title_box.pack(side=tk.LEFT)
         
-        ttk.Label(title_box, text="Smart File Organizer", style="Header.TLabel").pack(anchor=tk.W)
+        ttk.Label(title_box, text="SFO File Organizer", style="Header.TLabel").pack(anchor=tk.W)
         ttk.Label(title_box, text="Automatically organize your files into categorized folders", style="Subtitle.TLabel").pack(anchor=tk.W)
 
         # --- Card 1: Source (Green) ---
@@ -902,7 +902,7 @@ class SmartFileOrganizerGUI:
         self.log_text.tag_configure("error", foreground=self.colors.DANGER)
         self.log_text.tag_configure("header", foreground=self.colors.ACCENT_LOGS_BORDER, font=("Consolas", 9, "bold"))
         
-        self.log("Welcome to Smart File Organizer!", "header")
+        self.log("Welcome to SFO File Organizer!", "header")
         self.log(f"Default source: {self.source_dir.get()}", "info")
         
     def create_progress_section(self, parent):
@@ -993,7 +993,7 @@ class SmartFileOrganizerGUI:
             self.log(f"\n{'='*50}", "header")
             self.log(f"WATCH MODE ENABLED: Monitoring {source}", "header")
             self.status_label.configure(text="Watching for changes...")
-            self.root.title("Smart File Organizer (WATCHING)")
+            self.root.title("SFO File Organizer (WATCHING)")
             
             # Start watcher in separate thread
             self._start_watcher(source)
@@ -1001,7 +1001,7 @@ class SmartFileOrganizerGUI:
             self._stop_watcher()
             self.log("WATCH MODE DISABLED", "warning")
             self.status_label.configure(text="")
-            self.root.title("Smart File Organizer")
+            self.root.title("SFO File Organizer")
 
     def _start_watcher(self, source):
         """Initialize and start the watchdog observer."""
@@ -1366,7 +1366,7 @@ def main():
     # Set icon if available
     # The icon setting logic is now handled by the set_icon method within the class.
     
-    app = SmartFileOrganizerGUI(root)
+    app = SFOFileOrganizerGUI(root)
     root.mainloop()
 
 

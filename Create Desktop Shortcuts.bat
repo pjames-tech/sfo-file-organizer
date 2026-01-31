@@ -1,5 +1,5 @@
 @echo off
-:: Smart File Organizer - Desktop Shortcut Creator
+:: SFO File Organizer - Desktop Shortcut Creator
 :: Run this ONCE to create shortcuts on your Desktop
 
 title Creating Desktop Shortcuts
@@ -11,7 +11,7 @@ set "DESKTOP=%USERPROFILE%\Desktop"
 
 echo.
 echo ====================================================
-echo   Smart File Organizer - Shortcut Creator
+echo   SFO File Organizer - Shortcut Creator
 echo ====================================================
 echo.
 
@@ -24,7 +24,7 @@ echo sLinkFile = "%DESKTOP%\File Organizer.lnk" >> "%TEMP%\CreateShortcut.vbs"
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> "%TEMP%\CreateShortcut.vbs"
 echo oLink.TargetPath = "%SCRIPT_DIR%Start File Organizer.bat" >> "%TEMP%\CreateShortcut.vbs"
 echo oLink.WorkingDirectory = "%SCRIPT_DIR%" >> "%TEMP%\CreateShortcut.vbs"
-echo oLink.Description = "Smart File Organizer - Organize your files easily" >> "%TEMP%\CreateShortcut.vbs"
+echo oLink.Description = "SFO File Organizer - Organize your files easily" >> "%TEMP%\CreateShortcut.vbs"
 echo oLink.IconLocation = "shell32.dll,3" >> "%TEMP%\CreateShortcut.vbs"
 echo oLink.Save >> "%TEMP%\CreateShortcut.vbs"
 
@@ -37,7 +37,7 @@ echo sLinkFile = "%DESKTOP%\File Organizer Dashboard.lnk" >> "%TEMP%\CreateShort
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> "%TEMP%\CreateShortcut.vbs"
 echo oLink.TargetPath = "%SCRIPT_DIR%Open Dashboard.bat" >> "%TEMP%\CreateShortcut.vbs"
 echo oLink.WorkingDirectory = "%SCRIPT_DIR%" >> "%TEMP%\CreateShortcut.vbs"
-echo oLink.Description = "Smart File Organizer - Web Dashboard" >> "%TEMP%\CreateShortcut.vbs"
+echo oLink.Description = "SFO File Organizer - Web Dashboard" >> "%TEMP%\CreateShortcut.vbs"
 echo oLink.IconLocation = "shell32.dll,14" >> "%TEMP%\CreateShortcut.vbs"
 echo oLink.Save >> "%TEMP%\CreateShortcut.vbs"
 

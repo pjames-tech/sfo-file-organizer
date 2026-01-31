@@ -1,11 +1,11 @@
-; Script generated for Smart File Organizer
+; Script generated for SFO File Organizer
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
-#define MyAppName "Smart File Organizer"
+#define MyAppName "SFO File Organizer"
 #define MyAppVersion "1.2.0"
 #define MyAppPublisher "PJames Tech"
 #define MyAppURL "https://github.com/pjames-tech"
-#define MyAppExeName "Smart File Organizer.exe"
+#define MyAppExeName "SFO File Organizer.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -23,7 +23,7 @@ DisableProgramGroupPage=yes
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
 OutputDir=Installer
-OutputBaseFilename=SmartFileOrganizer_Setup
+OutputBaseFilename=SFOFileOrganizer_Setup
 SetupIconFile=app_icon.ico
 Compression=lzma
 SolidCompression=yes
@@ -32,7 +32,7 @@ WizardStyle=modern
 ; Prevent "Unknown Publisher" somewhat by adding metadata
 VersionInfoVersion={#MyAppVersion}
 VersionInfoCompany={#MyAppPublisher}
-VersionInfoDescription=Smart File Organizer Installer
+VersionInfoDescription=SFO File Organizer Installer
 VersionInfoCopyright=Copyright (C) 2024 {#MyAppPublisher}
 
 [Languages]
@@ -43,7 +43,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 ; IMPORTANT: Build the exe first using BUILD_EXE.bat before compiling this!
-Source: "dist\Smart File Organizer.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\SFO File Organizer.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "app_icon.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "app_icon.png"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
@@ -57,4 +57,4 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppName}}
 
 [Registry]
 ; Register AppUserModelID for Taskbar Grouping
-Root: HKCU; Subkey: "Software\Classes\AppUserModelId\pjames.smart_file_organizer.gui.1.0"; ValueType: string; ValueName: "DisplayName"; ValueData: "Smart File Organizer"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Classes\AppUserModelId\pjames.sfo_file_organizer.gui.1.0"; ValueType: string; ValueName: "DisplayName"; ValueData: "SFO File Organizer"; Flags: uninsdeletekey
