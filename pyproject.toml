@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sfo-file-organizer"
-version = "1.0.1"
+version = "1.1.0"
 description = "A Python utility that automatically organizes files into categorized folders based on file types, with rule-based classification and real-time monitoring."
 readme = "README.md"
 license = {text = "MIT"}
